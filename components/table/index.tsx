@@ -1,10 +1,9 @@
 import { db, UsersTable } from '@/lib/drizzle'
 import { timeAgo } from '@/lib/utils'
 import Image from 'next/image'
-import RefreshButton from './refresh-button'
 import { seed } from '@/lib/seed'
 
-export default async function Table() {
+export default async function Index() {
   let users
   let startTime = Date.now()
   try {
@@ -34,7 +33,6 @@ export default async function Table() {
             Fetched {users.length} users in {duration}ms
           </p>
         </div>
-        <RefreshButton />
       </div>
       <div className="divide-y divide-gray-900/5">
         {users.map((user) => (
