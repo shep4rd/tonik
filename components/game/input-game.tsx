@@ -1,4 +1,4 @@
-export default function InputGame({ className }: { className?: string }) {
+export default function InputGame() {
   return (
     <input className="group items-center">
 

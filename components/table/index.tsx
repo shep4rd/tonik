@@ -1,6 +1,4 @@
 import { db, PlayersTable } from '@/lib/drizzle'
-import { timeAgo } from '@/lib/utils'
-import Image from 'next/image'
 import { seed } from '@/lib/seed'
 
 export default async function Index() {
@@ -29,7 +27,7 @@ export default async function Index() {
     <div className="bg-white/30 p-12 shadow-xl ring-1 ring-gray-900/5 rounded-lg backdrop-blur-lg max-w-xl mx-auto w-full">
       <div className="flex justify-between items-center mb-4">
         <div className="space-y-1">
-          <h2 className="text-xl font-semibold">Recent Players</h2>
+          <h2 className="text-xl font-semibold">Players</h2>
           <p className="text-sm text-gray-500">
             Fetched {players.length} players in {duration}ms
           </p>
@@ -39,10 +37,12 @@ export default async function Index() {
         {players.map((player) => (
           <div
             key={player.name}
-            className="flex items-center justify-between py-3"
+            className="flex justify-between py-3"
           >
+            <p className="font-medium leading-none">{player.progress}</p>
             <p className="font-medium leading-none">{player.name}</p>
-            <p className="text-sm text-gray-500">{timeAgo(player.createdAt)}</p>
+            <p className="font-medium leading-none">{player.wpm}</p>
+            <p className="font-medium leading-none">{player.accuracy.toFixed(2)}</p>
           </div>
         ))}
       </div>
