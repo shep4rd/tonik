@@ -1,6 +1,8 @@
 import {
+  doublePrecision,
   pgTable,
   serial,
+  integer,
   text,
   timestamp,
   uniqueIndex,
@@ -9,24 +11,36 @@ import { InferSelectModel, InferInsertModel } from 'drizzle-orm'
 import { sql } from '@vercel/postgres'
 import { drizzle } from 'drizzle-orm/vercel-postgres'
 
-export const UsersTable = pgTable(
-  'users',
+export const PlayersTable = pgTable(
+  'players',
   {
     id: serial('id').primaryKey(),
     name: text('name').notNull(),
-    email: text('email').notNull(),
-    image: text('image').notNull(),
+    progress: text('progress').default('').notNull(),
+    wpm: integer('wpm').default(0).notNull(),
+    accuracy: doublePrecision('accuracy').default(0.00).notNull(),
     createdAt: timestamp('createdAt').defaultNow().notNull(),
   },
   (users) => {
     return {
-      uniqueIdx: uniqueIndex('unique_idx').on(users.email),
+      uniqueIdx: uniqueIndex('unique_idx').on(users.name),
     }
   }
 )
 
-export type User = InferSelectModel<typeof UsersTable>
-export type NewUser = InferInsertModel<typeof UsersTable>
+export type Player = InferSelectModel<typeof PlayersTable>
+export type NewPlayer = InferInsertModel<typeof PlayersTable>
+
+export const SentancesTable = pgTable(
+  'sentences',
+  {
+    id: serial('id').primaryKey(),
+    text: text('text').notNull(),
+  }
+)
+
+export type Sentence = InferSelectModel<typeof SentancesTable>
+export type NewSentences = InferInsertModel<typeof SentancesTable>
 
 // Connect to Vercel Postgres
 export const db = drizzle(sql)

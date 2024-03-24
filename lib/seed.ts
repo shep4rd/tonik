@@ -1,49 +1,66 @@
 import { sql } from '@vercel/postgres'
 import { db } from '@/lib/drizzle'
-import { UsersTable, User, NewUser } from './drizzle'
+import { PlayersTable, Player, NewPlayer, SentancesTable, Sentence, NewSentences } from './drizzle'
 
-const newUsers: NewUser[] = [
+const newPlayers: NewPlayer[] = [
   {
     name: 'Guillermo Rauch',
-    email: 'rauchg@vercel.com',
-    image:
-      'https://images.ctfassets.net/e5382hct74si/2P1iOve0LZJRZWUzfXpi9r/9d4d27765764fb1ad7379d7cbe5f1043/ucxb4lHy_400x400.jpg',
   },
   {
     name: 'Lee Robinson',
-    email: 'lee@vercel.com',
-    image:
-      'https://images.ctfassets.net/e5382hct74si/4BtM41PDNrx4z1ml643tdc/7aa88bdde8b5b7809174ea5b764c80fa/adWRdqQ6_400x400.jpg',
   },
   {
     name: 'Steven Tey',
-    email: 'stey@vercel.com',
-    image:
-      'https://images.ctfassets.net/e5382hct74si/4QEuVLNyZUg5X6X4cW4pVH/eb7cd219e21b29ae976277871cd5ca4b/profile.jpg',
   },
+]
+
+const newSentences: NewSentences[] = [
+  {
+    text: 'If you\'re visiting this page, you\'re likely here because you\'re searching for a random sentence. Sometimes a random word just isn\'t enough, and that is where the random sentence generator comes into play. By inputting the desired number, you can make a list of as many random sentences as you want or need. Producing random sentences can be helpful in a number of different ways.'
+  },
+  {
+    text: 'For writers, a random sentence can help them get their creative juices flowing. Since the topic of the sentence is completely unknown, it forces the writer to be creative when the sentence appears. There are a number of different ways a writer can use the random sentence for creativity. The most common way to use the sentence is to begin a story. Another option is to include it somewhere in the story. A much more difficult challenge is to use it to end a story. In any of these cases, it forces the writer to think creatively since they have no idea what sentence will appear from the tool.'
+  },
+  {
+    text: 'For those writers who have writers\' block, this can be an excellent way to take a step to crumbling those walls. By taking the writer away from the subject matter that is causing the block, a random sentence may allow them to see the project they\'re working on in a different light and perspective. Sometimes all it takes is to get that first sentence down to help break the block.'
+  }
 ]
 
 export async function seed() {
   // Create table with raw SQL
-  const createTable = await sql.query(`
-      CREATE TABLE IF NOT EXISTS users (
+  const createTablePlayers = await sql.query(`
+      CREATE TABLE IF NOT EXISTS players (
         id SERIAL PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
-        email VARCHAR(255) UNIQUE NOT NULL,
-        image VARCHAR(255),
+        progress VARCHAR(255) NOT NULL DEFAULT '',
+        wpm integer DEFAULT 0,
+        accuracy double precision DEFAULT 0.00,
         "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
   `)
-  console.log(`Created "users" table`)
 
-  const insertedUsers: User[] = await db
-    .insert(UsersTable)
-    .values(newUsers)
+  const createTableSentences = await sql.query(`
+     CREATE TABLE IF NOT EXISTS sentences (
+        id SERIAL PRIMARY KEY,
+        "text" text NOT NULL
+      );
+  `)
+
+  const insertedPlayers: Player[] = await db
+    .insert(PlayersTable)
+    .values(newPlayers)
     .returning()
-  console.log(`Seeded ${insertedUsers.length} users`)
+
+  const insertedSentences: Sentence[] = await db
+    .insert(SentancesTable)
+    .values(newSentences)
+    .returning()
 
   return {
-    createTable,
-    insertedUsers,
+    createTablePlayers,
+    createTableSentences,
+    insertedPlayers,
+    insertedSentences
   }
 }
+

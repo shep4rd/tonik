@@ -1,5 +1,3 @@
-import ExpandingArrow from "@/components/button-join/expanding-arrow";
-
 export default function ButtonJoin({ className }: { className?: string }) {
   return (
     <button
